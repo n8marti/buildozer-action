@@ -27,6 +27,9 @@ RUN python3 -m venv /home/user/.venv
 ENV VIRTUAL_ENV=/home/user/.venv
 ENV PATH=/home/user/.venv/bin:$PATH
 
+# Install dependencies
+RUN python -m pip install distutils
+
 # Set up entrypoint
 COPY entrypoint.py /action/entrypoint.py
 ENTRYPOINT ["/action/entrypoint.py"]
