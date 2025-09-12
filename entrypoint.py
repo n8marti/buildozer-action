@@ -17,8 +17,8 @@ from os import environ as env
 
 
 def main():
-    repository_root = os.path.abspath(env["INPUT_REPOSITORY_ROOT"])
-    change_owner(env["USER"], repository_root)
+    # repository_root = os.path.abspath(env["INPUT_REPOSITORY_ROOT"])
+    # change_owner(env["USER"], repository_root)
     fix_home()
     install_buildozer(env["INPUT_BUILDOZER_VERSION"])
     apply_buildozer_settings()
@@ -26,7 +26,7 @@ def main():
     apply_patches()
     run_command(env["INPUT_COMMAND"])
     set_output(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
-    change_owner("root", repository_root)
+    # change_owner("root", repository_root)
 
 
 def change_owner(user, repository_root):
@@ -140,18 +140,12 @@ def run_command(command):
 
 def set_output(repository_root, workdir):
     if not os.path.exists("bin"):
-        print(
-            "::error::Output directory does not exist. See Buildozer log for error"
-        )
+        print("::error::Output directory does not exist. See Buildozer log for error")
         exit(1)
     filename = [
-        file
-        for file in os.listdir("bin")
-        if os.path.isfile(os.path.join("bin", file))
+        file for file in os.listdir("bin") if os.path.isfile(os.path.join("bin", file))
     ][0]
-    path = os.path.normpath(
-        os.path.join(repository_root, workdir, "bin", filename)
-    )
+    path = os.path.normpath(os.path.join(repository_root, workdir, "bin", filename))
     # Run with sudo to have access to GITHUB_OUTPUT file
     subprocess.check_call(
         [
