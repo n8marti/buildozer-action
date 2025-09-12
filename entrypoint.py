@@ -142,7 +142,7 @@ def set_build_env():
     android_platform = f"{buildozer_global}/android/platform"
     env["APP_ANDROID_ANT_PATH"] = android_platform
     env["APP_ANDROID_NDK_PATH"] = android_platform
-    env["APP_ANDROID_SDK_PATH"] = android_platform
+    env["APP_ANDROID_SDK_PATH"] = f"{android_platform}/android-sdk"
 
 
 def run_command(command):
