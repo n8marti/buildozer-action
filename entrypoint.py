@@ -15,6 +15,7 @@ import subprocess
 
 # import sys
 from os import environ as env
+from pathlib import Path
 
 
 def main():
@@ -25,7 +26,7 @@ def main():
     apply_buildozer_settings()
     change_directory(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
     # apply_patches()
-    set_build_env()
+    symlink_global_buildozer_dir()
     run_command(env["INPUT_COMMAND"])
     set_output(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
     # change_owner("root", repository_root)
@@ -132,17 +133,20 @@ def apply_patches():
     print("::endgroup::")
 
 
-def set_build_env():
-    # Set build_dir
-    buildozer_global = (
+def symlink_global_buildozer_dir():
+    global_buildozer_dir = Path(
         f"{env['GITHUB_WORKSPACE']}/{env['INPUT_REPOSITORY_ROOT']}/.buildozer_global"
     )
-    env["BUILDOZER_BUILD_DIR"] = buildozer_global
-    # Set android platform dirs
-    # android_platform = f"{buildozer_global}/android/platform"
-    # env["APP_ANDROID_ANT_PATH"] = android_platform
-    # env["APP_ANDROID_NDK_PATH"] = android_platform
-    # env["APP_ANDROID_SDK_PATH"] = f"{android_platform}/android-sdk"
+    global_buildozer_dir.symlink_to(
+        f"{env['HOME']}/.buildozer", target_is_directory=True
+    )
+
+
+def set_buildozer_env():
+    # Set build_dir to GutHub runner
+    env["BUILDOZER_BUILD_DIR"] = (
+        f"{env['GITHUB_WORKSPACE']}/{env['INPUT_REPOSITORY_ROOT']}/.buildozer_global"
+    )
 
 
 def run_command(command):
