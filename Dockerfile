@@ -26,7 +26,7 @@ ENV PYTHONUNBUFFERED=1
 RUN python3 -m venv /home/user/.venv
 ENV VIRTUAL_ENV=/home/user/.venv
 ENV PATH=/home/user/.venv/bin:$PATH
-ENV BUILDOZER_BUILD_DIR="${GITHUB_WORKSPACE}/${INPUT_REPOSITORY_ROOT}/.buildozer_global"
+# ENV BUILDOZER_BUILD_DIR="${GITHUB_WORKSPACE}/${INPUT_REPOSITORY_ROOT}/.buildozer_global"  # vars not found
 
 # Install dependencies
 RUN python -m pip install setuptools

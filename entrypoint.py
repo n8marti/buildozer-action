@@ -18,7 +18,6 @@ from os import environ as env
 
 
 def main():
-    # env["USER"] = "ubuntu"
     # repository_root = os.path.abspath(env["INPUT_REPOSITORY_ROOT"])
     # change_owner(env["USER"], repository_root)
     fix_home()
@@ -26,6 +25,9 @@ def main():
     apply_buildozer_settings()
     change_directory(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
     # apply_patches()
+    env["BUILDOZER_BUILD_DIR"] = (
+        f"{env['GITHUB_WORKSPACE']}/{env['INPUT_REPOSITORY_ROOT']}/.buildozer_global"
+    )
     run_command(env["INPUT_COMMAND"])
     set_output(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
     # change_owner("root", repository_root)
