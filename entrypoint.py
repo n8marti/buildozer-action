@@ -25,7 +25,7 @@ def main():
     install_buildozer(env["INPUT_BUILDOZER_VERSION"])
     apply_buildozer_settings()
     change_directory(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
-    apply_patches()
+    # apply_patches()
     run_command(env["INPUT_COMMAND"])
     set_output(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
     # change_owner("root", repository_root)

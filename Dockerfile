@@ -22,10 +22,11 @@ RUN echo "Set disable_coredump false" | sudo tee -a /etc/sudo.conf > /dev/null
 # Set env variable to disable this behavior
 ENV PYTHONUNBUFFERED=1
 
-# Set up venv
+# Set up venv and env
 RUN python3 -m venv /home/user/.venv
 ENV VIRTUAL_ENV=/home/user/.venv
 ENV PATH=/home/user/.venv/bin:$PATH
+ENV BUILDOZER_BUILD_DIR="${GITHUB_WORKSPACE}/${INPUT_REPOSITORY_ROOT}/.buildozer_global"
 
 # Install dependencies
 RUN python -m pip install setuptools
