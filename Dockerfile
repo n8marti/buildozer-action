@@ -23,9 +23,9 @@ RUN echo "Set disable_coredump false" | sudo tee -a /etc/sudo.conf > /dev/null
 ENV PYTHONUNBUFFERED=1
 
 # Set up venv
-RUN python3 -m venv venv
-ENV VIRTUAL_ENV=/venv
-ENV PATH=/venv/bin:$PATH
+RUN python3 -m venv /home/user/.venv
+ENV VIRTUAL_ENV=/home/user/.venv
+ENV PATH=/home/user/.venv/bin:$PATH
 
 # Set up entrypoint
 COPY entrypoint.py /action/entrypoint.py
