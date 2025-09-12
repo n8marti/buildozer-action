@@ -25,9 +25,7 @@ def main():
     apply_buildozer_settings()
     change_directory(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
     # apply_patches()
-    env["BUILDOZER_BUILD_DIR"] = (
-        f"{env['GITHUB_WORKSPACE']}/{env['INPUT_REPOSITORY_ROOT']}/.buildozer_global"
-    )
+    set_build_env()
     run_command(env["INPUT_COMMAND"])
     set_output(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
     # change_owner("root", repository_root)
@@ -132,6 +130,19 @@ def apply_patches():
         )
     open(buildozer.__file__, "w", encoding="utf-8").write(new_source)
     print("::endgroup::")
+
+
+def set_build_env():
+    # Set build_dir
+    buildozer_global = (
+        f"{env['GITHUB_WORKSPACE']}/{env['INPUT_REPOSITORY_ROOT']}/.buildozer_global"
+    )
+    env["BUILDOZER_BUILD_DIR"] = buildozer_global
+    # Set android platform dirs
+    android_platform = f"{buildozer_global}/android/platform"
+    env["APP_ANDROID_ANT_PATH"] = android_platform
+    env["APP_ANDROID_NDK_PATH"] = android_platform
+    env["APP_ANDROID_SDK_PATH"] = android_platform
 
 
 def run_command(command):
