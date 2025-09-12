@@ -23,8 +23,8 @@ RUN echo "Set disable_coredump false" | sudo tee -a /etc/sudo.conf > /dev/null
 ENV PYTHONUNBUFFERED=1
 
 # Set up venv
-RUN virtualenv venv
-ENV VIRTUAL_ENV /venv
+RUN python3 -m venv venv
+ENV VIRTUAL_ENV=/venv
 ENV PATH=/venv/bin:$PATH
 
 # Set up entrypoint
