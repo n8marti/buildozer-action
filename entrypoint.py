@@ -17,8 +17,9 @@ from os import environ as env
 
 
 def main():
-    # repository_root = os.path.abspath(env["INPUT_REPOSITORY_ROOT"])
-    # change_owner(env["USER"], repository_root)
+    env["USER"] = "ubuntu"
+    repository_root = os.path.abspath(env["INPUT_REPOSITORY_ROOT"])
+    change_owner(env["USER"], repository_root)
     fix_home()
     install_buildozer(env["INPUT_BUILDOZER_VERSION"])
     apply_buildozer_settings()
@@ -26,7 +27,7 @@ def main():
     apply_patches()
     run_command(env["INPUT_COMMAND"])
     set_output(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
-    # change_owner("root", repository_root)
+    change_owner("root", repository_root)
 
 
 def change_owner(user, repository_root):
@@ -43,10 +44,7 @@ def fix_home():
 def install_buildozer(buildozer_version):
     # Install required Buildozer version
     print("::group::Installing Buildozer")
-    # pip_install = [sys.executable] + "-m pip install --user --upgrade".split()
-    pip_install = [
-        sys.executable
-    ] + "-m pip install --break-system-packages --upgrade".split()
+    pip_install = [sys.executable] + "-m pip install --user --upgrade".split()
     if buildozer_version == "stable":
         # Install stable buildozer from PyPI
         subprocess.check_call([*pip_install, "buildozer"])
