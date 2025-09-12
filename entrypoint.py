@@ -137,9 +137,9 @@ def symlink_global_buildozer_dir():
     global_buildozer_dir = Path(
         f"{env['GITHUB_WORKSPACE']}/{env['INPUT_REPOSITORY_ROOT']}/.buildozer_global"
     )
-    global_buildozer_dir.symlink_to(
-        f"{env['HOME']}/.buildozer", target_is_directory=True
-    )
+    global_buildozer_dir.mkdir()
+    default_buildozer_dir = Path(env["BUILDOZER_BUILD_DIR"]).resolve()
+    default_buildozer_dir.symlink_to(global_buildozer_dir, target_is_directory=True)
 
 
 def set_buildozer_env():
