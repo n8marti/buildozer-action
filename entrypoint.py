@@ -19,23 +19,14 @@ from pathlib import Path
 
 
 def main():
-    # repository_root = os.path.abspath(env["INPUT_REPOSITORY_ROOT"])
-    # change_owner(env["USER"], repository_root)
     fix_home()
     install_buildozer(env["INPUT_BUILDOZER_VERSION"])
-    # apply_buildozer_settings()
     change_directory(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
-    # apply_patches()
     symlink_global_buildozer_dir()
     run_command(env["INPUT_COMMAND"])
     set_output(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
-    # change_owner("root", repository_root)
-
-
-def change_owner(user, repository_root):
-    # GitHub sets root as owner of repository directory. Change it to user
-    # And return to root after all commands
-    subprocess.check_call(["sudo", "chown", "-R", user, repository_root])
+    show_env()
+    show_buildozer_global_dir()
 
 
 def fix_home():
@@ -75,15 +66,6 @@ def install_buildozer(buildozer_version):
     print("::endgroup::")
 
 
-def apply_buildozer_settings():
-    # Buildozer settings to disable interactions
-    env["BUILDOZER_WARN_ON_ROOT"] = "0"
-    env["APP_ANDROID_ACCEPT_SDK_LICENSE"] = "1"
-    # Do not allow to change directories
-    env["BUILDOZER_BUILD_DIR"] = "./.buildozer"
-    env["BUILDOZER_BIN"] = "./bin"
-
-
 def change_directory(repository_root, workdir):
     directory = os.path.join(repository_root, workdir)
     # Change directory to workir
@@ -93,66 +75,19 @@ def change_directory(repository_root, workdir):
     os.chdir(directory)
 
 
-def apply_patches():
-    # Apply patches
-    print("::group::Applying patches to Buildozer")
-    try:
-        import importlib
-        import site
-
-        importlib.reload(site)
-        globals()["buildozer"] = importlib.import_module("buildozer")
-    except ImportError:
-        print(
-            "::error::Cannot apply patches to buildozer (ImportError). "
-            "Update buildozer-action to new version or create a Bug Request"
-        )
-        print("::endgroup::")
-        return
-
-    print("Changing global_buildozer_dir")
-    source = open(buildozer.__file__, "r", encoding="utf-8").read()
-    new_source = source.replace(
-        """
-    @property
-    def global_buildozer_dir(self):
-        return join(expanduser('~'), '.buildozer')
-""",
-        f"""
-    @property
-    def global_buildozer_dir(self):
-        return '{env["GITHUB_WORKSPACE"]}/{env["INPUT_REPOSITORY_ROOT"]}/.buildozer_global'
-""",
-    )
-    if new_source == source:
-        print(
-            "::warning::Cannot change global buildozer directory. "
-            "Update buildozer-action to new version or create a Bug Request"
-        )
-    open(buildozer.__file__, "w", encoding="utf-8").write(new_source)
-    print("::endgroup::")
-
-
 def symlink_global_buildozer_dir():
-    global_buildozer_dir = Path(
+    env["BUILDOZER_DEFAULT"] = f"{env['HOME']}/.buildozer"
+    env["BUILDOZER_GLOBAL"] = (
         f"{env['GITHUB_WORKSPACE']}/{env['INPUT_REPOSITORY_ROOT']}/.buildozer_global"
+    )
+    global_buildozer_dir = Path(env["BUILDOZER_GLOBAL_DIR"])
+    default_buildozer_dir = Path(env["BUILDOZER_DEFAULT_DIR"])
+    print(
+        f"::group::Creating symlink from {global_buildozer_dir} to {default_buildozer_dir}."
     )
     global_buildozer_dir.mkdir()
-    default_buildozer_dir = Path.home() / ".buildozer"
     default_buildozer_dir.symlink_to(global_buildozer_dir, target_is_directory=True)
-    for d in (global_buildozer_dir, default_buildozer_dir):
-        p = subprocess.run(["ls", "-a", "-l", str(d)], capture_output=True)
-        print(f"{p.stdout=}")
-        print(f"{p.stderr=}")
-    for k, v in sorted(env.items()):
-        print(f"{k}={v}")
-
-
-def set_buildozer_env():
-    # Set build_dir to GutHub runner
-    env["BUILDOZER_BUILD_DIR"] = (
-        f"{env['GITHUB_WORKSPACE']}/{env['INPUT_REPOSITORY_ROOT']}/.buildozer_global"
-    )
+    print("::endgroup::")
 
 
 def run_command(command):
@@ -180,6 +115,20 @@ def set_output(repository_root, workdir):
             f"echo 'filename={path}' >> {os.environ['GITHUB_OUTPUT']}",
         ]
     )
+
+
+def show_env():
+    print("::group::Showing env variables.")
+    for k, v in sorted(env.items()):
+        print(f"{k}={v}")
+    print("::endgroup::")
+
+
+def show_buildozer_global_dir():
+    print("::group::Showing BUILDOZER_GLOBAL_DIR contents.")
+    for f in Path(env["BUILDOZER_GLOBAL_DIR"]).iterdir():
+        print(f)
+    print("::endgroup::")
 
 
 if __name__ == "__main__":
