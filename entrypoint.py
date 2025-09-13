@@ -141,7 +141,7 @@ def symlink_global_buildozer_dir():
     default_buildozer_dir = Path(env["BUILDOZER_BUILD_DIR"]).resolve()
     default_buildozer_dir.symlink_to(global_buildozer_dir, target_is_directory=True)
     for d in (global_buildozer_dir, default_buildozer_dir):
-        p = subprocess.run(["ls", "-a", "-l", str(d)])
+        p = subprocess.run(["ls", "-a", "-l", str(d)], capture_output=True)
         print(f"{p.stdout=}")
         print(f"{p.stderr=}")
 
