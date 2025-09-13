@@ -23,8 +23,6 @@ RUN echo "Set disable_coredump false" | sudo tee -a /etc/sudo.conf > /dev/null
 ENV PYTHONUNBUFFERED=1
 
 # Set up venv and env
-# GitHub sets HOME to /github/home, but Buildozer is installed to /home/user. Change HOME to user's home
-ENV HOME=$HOME_DIR
 # Set venv vars
 RUN python3 -m venv $HOME_DIR/.venv
 ENV VIRTUAL_ENV=$HOME_DIR/.venv
@@ -36,8 +34,8 @@ ENV APP_ANDROID_ACCEPT_SDK_LICENSE="1"
 ENV BUILDOZER_BUILD_DIR="./.buildozer"
 ENV BUILDOZER_BIN="./bin"
 
-# Install dependencies
-RUN python -m pip install setuptools
+# Install dependencies in venv
+#RUN python -m pip install setuptools
 
 # Set up entrypoint
 COPY entrypoint.py /action/entrypoint.py

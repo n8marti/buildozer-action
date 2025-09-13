@@ -21,7 +21,7 @@ from pathlib import Path
 def main():
     # repository_root = os.path.abspath(env["INPUT_REPOSITORY_ROOT"])
     # change_owner(env["USER"], repository_root)
-    # fix_home()
+    fix_home()
     install_buildozer(env["INPUT_BUILDOZER_VERSION"])
     # apply_buildozer_settings()
     change_directory(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
