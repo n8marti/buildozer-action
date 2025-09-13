@@ -26,7 +26,7 @@ def main():
     run_command(env["INPUT_COMMAND"])
     set_output(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
     show_env()
-    show_buildozer_global_dir()
+    show_buildozer_dirs()
 
 
 def fix_home():
@@ -76,8 +76,8 @@ def change_directory(repository_root, workdir):
 
 
 def symlink_global_buildozer_dir():
-    env["BUILDOZER_DEFAULT"] = f"{env['HOME']}/.buildozer"
-    env["BUILDOZER_GLOBAL"] = (
+    env["BUILDOZER_DEFAULT_DIR"] = f"{env['HOME']}/.buildozer"
+    env["BUILDOZER_GLOBAL_DIR"] = (
         f"{env['GITHUB_WORKSPACE']}/{env['INPUT_REPOSITORY_ROOT']}/.buildozer_global"
     )
     global_buildozer_dir = Path(env["BUILDOZER_GLOBAL_DIR"])
@@ -124,10 +124,12 @@ def show_env():
     print("::endgroup::")
 
 
-def show_buildozer_global_dir():
-    print("::group::Showing BUILDOZER_GLOBAL_DIR contents.")
-    for f in Path(env["BUILDOZER_GLOBAL_DIR"]).iterdir():
-        print(f)
+def show_buildozer_dirs():
+    print("::group::Showing BUILDOZER_DEFAULT_DIR & BUILDOZER_GLOBAL_DIR contents.")
+    for d in (env["BUILDOZER_DEFAULT_DIR"], env["BUILDOZER_GLOBAL_DIR"]):
+        print(f"{d}:")
+        for f in Path(d).iterdir():
+            print(f)
     print("::endgroup::")
 
 
