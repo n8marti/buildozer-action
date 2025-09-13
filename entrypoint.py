@@ -138,12 +138,14 @@ def symlink_global_buildozer_dir():
         f"{env['GITHUB_WORKSPACE']}/{env['INPUT_REPOSITORY_ROOT']}/.buildozer_global"
     )
     global_buildozer_dir.mkdir()
-    default_buildozer_dir = Path(env["BUILDOZER_BUILD_DIR"]).resolve()
+    default_buildozer_dir = Path.home() / ".buildozer"
     default_buildozer_dir.symlink_to(global_buildozer_dir, target_is_directory=True)
     for d in (global_buildozer_dir, default_buildozer_dir):
         p = subprocess.run(["ls", "-a", "-l", str(d)], capture_output=True)
         print(f"{p.stdout=}")
         print(f"{p.stderr=}")
+    for k, v in sorted(env.items()):
+        print(f"{k}={v}")
 
 
 def set_buildozer_env():
