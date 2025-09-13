@@ -35,7 +35,7 @@ ENV BUILDOZER_BUILD_DIR="./.buildozer"
 ENV BUILDOZER_BIN="./bin"
 
 # Install dependencies in venv
-#RUN python -m pip install setuptools
+RUN python -m pip install setuptools
 
 # Set up entrypoint
 COPY entrypoint.py /action/entrypoint.py
