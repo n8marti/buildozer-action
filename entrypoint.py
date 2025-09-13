@@ -21,9 +21,9 @@ from pathlib import Path
 def main():
     # repository_root = os.path.abspath(env["INPUT_REPOSITORY_ROOT"])
     # change_owner(env["USER"], repository_root)
-    fix_home()
+    # fix_home()
     install_buildozer(env["INPUT_BUILDOZER_VERSION"])
-    apply_buildozer_settings()
+    # apply_buildozer_settings()
     change_directory(env["INPUT_REPOSITORY_ROOT"], env["INPUT_WORKDIR"])
     # apply_patches()
     symlink_global_buildozer_dir()
@@ -140,6 +140,10 @@ def symlink_global_buildozer_dir():
     global_buildozer_dir.mkdir()
     default_buildozer_dir = Path(env["BUILDOZER_BUILD_DIR"]).resolve()
     default_buildozer_dir.symlink_to(global_buildozer_dir, target_is_directory=True)
+    for d in (global_buildozer_dir, default_buildozer_dir):
+        p = subprocess.run(["ls", "-a", "-l", str(d)])
+        print(f"{p.stdout=}")
+        print(f"{p.stderr=}")
 
 
 def set_buildozer_env():
