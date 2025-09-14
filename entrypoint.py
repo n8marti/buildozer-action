@@ -85,7 +85,7 @@ def symlink_global_buildozer_dir():
     print(
         f"::group::Creating symlink from {global_buildozer_dir} to {default_buildozer_dir}."
     )
-    global_buildozer_dir.mkdir()
+    global_buildozer_dir.mkdir(exist_ok=True)
     default_buildozer_dir.symlink_to(global_buildozer_dir, target_is_directory=True)
     print("::endgroup::")
 
