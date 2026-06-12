@@ -22,5 +22,21 @@ RUN echo "Set disable_coredump false" | sudo tee -a /etc/sudo.conf > /dev/null
 # Set env variable to disable this behavior
 ENV PYTHONUNBUFFERED=1
 
+# Set up venv and env
+# Set venv vars (mimics activating the venv)
+RUN python3 -m venv $HOME_DIR/.venv
+ENV VIRTUAL_ENV=$HOME_DIR/.venv
+ENV PATH=$HOME_DIR/.venv/bin:$PATH
+# Buildozer settings to disable interactions
+ENV BUILDOZER_WARN_ON_ROOT="0"
+ENV APP_ANDROID_ACCEPT_SDK_LICENSE="1"
+# Do not allow to change directories
+ENV BUILDOZER_BUILD_DIR="./.buildozer"
+ENV BUILDOZER_BIN="./bin"
+
+# Install dependencies in venv
+RUN python -m pip install setuptools
+
+# Set up entrypoint
 COPY entrypoint.py /action/entrypoint.py
 ENTRYPOINT ["/action/entrypoint.py"]
